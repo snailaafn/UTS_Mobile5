@@ -18,6 +18,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        val stringKehadiran = resources.getStringArray(R.array.kehadiran)
+
         with(binding){
 //            Get Array
             val monthList = resources.getStringArray(R.array.month)
@@ -30,10 +32,10 @@ class MainActivity : AppCompatActivity() {
 
 
 //            Kehadiran Dropdown=======================================
-            val adapterKehadiran = ArrayAdapter<String>(
-                this,
+            val adapterKehadiran = ArrayAdapter(
+                this@MainActivity,
                 android.R.layout.simple_spinner_item,
-                kehadiranList
+                stringKehadiran
             )
             kehadiranSpinner.adapter = adapterKehadiran
 
@@ -41,7 +43,12 @@ class MainActivity : AppCompatActivity() {
             kehadiranSpinner.onItemSelectedListener =
                 object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
+                        val selectedKehadiran = stringKehadiran[position]
+                        if (selectedKehadiran == "Terlambat" || selectedKehadiran == "Izin") {
+                            binding.keteranganEdittext.visibility = View.VISIBLE
+                        } else {
+                            binding.keteranganEdittext.visibility = View.GONE
+                        }
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -49,8 +56,11 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-
-
+            binding.submitButton.setOnClickListener {
+                selectedTime = "${binding.timePicker.hour}:${binding.timePicker.minute}"
+                val toastMessage = "Presensi berhasil $selectedDate jam $selectedTime"
+                Toast.makeText(this@MainActivity, toastMessage, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
